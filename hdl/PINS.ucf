@@ -1,0 +1,17 @@
+
+CONFIG VCCAUX = "3.3" ;
+
+    NET "Clk"                        LOC = V10     | IOSTANDARD = LVCMOS33 | PERIOD = 100MHz ;
+    NET "Rx"                         LOC = A8      | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+    NET "Tx"                         LOC = B8      | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;
+    NET "DP_Switch"                  LOC = C17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #DP8
+    NET "Irq"                        LOC = K17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW5
+    NET "Reset"                      LOC = K18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST | PULLUP; #SW6
+    NET "LED[7]"                     LOC = P15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D1
+    NET "LED[6]"                     LOC = P16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D2
+    NET "LED[5]"                     LOC = N15     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D3
+    NET "LED[4]"                     LOC = N16     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D4
+    NET "LED[3]"                     LOC = U17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D5
+    NET "LED[2]"                     LOC = U18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D6
+    NET "LED[1]"                     LOC = T17     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D7
+    NET "LED[0]"                     LOC = T18     | IOSTANDARD = LVCMOS33 | DRIVE = 8 | SLEW = FAST ;         #D8
