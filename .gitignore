@@ -1,0 +1,5 @@
+# Test files
+tests/testbench/tb
+tests/testbench/CPU.vcd
+tests/CPU.vcd
+tests/tests/bin
