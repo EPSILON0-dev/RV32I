@@ -1,5 +1,11 @@
 # Test files
+tests/testbench/obj_dir
 tests/testbench/tb
 tests/testbench/CPU.vcd
+tests/testbench/CPU.v
+tests/testbench/work-obj93.cf
 tests/CPU.vcd
 tests/tests/bin
+
+# IDE project
+gowin/

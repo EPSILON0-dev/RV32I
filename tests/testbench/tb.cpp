@@ -62,6 +62,7 @@ int main(int argc, char** argv)
 
     printf("%d\n", memory[0]);
 
+    delete vcd;
     delete top;
     delete contextp;
     return 0;
