@@ -1,0 +1,37 @@
+
+bootloader:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00010117          	auipc	sp,0x10
+   4:	00010113          	mv	sp,sp
+   8:	008000ef          	jal	10 <main>
+   c:	0000006f          	j	c <_start+0xc>
+
+Disassembly of section .text:
+
+00000010 <main>:
+  10:	000205b7          	lui	a1,0x20
+  14:	0005a783          	lw	a5,0(a1) # 20000 <_stack_top+0x10000>
+  18:	00ce0537          	lui	a0,0xce0
+  1c:	02058693          	addi	a3,a1,32
+  20:	0017e793          	ori	a5,a5,1
+  24:	01079793          	slli	a5,a5,0x10
+  28:	0107d793          	srli	a5,a5,0x10
+  2c:	e6050513          	addi	a0,a0,-416 # cdfe60 <_stack_top+0xccfe60>
+  30:	00f5a023          	sw	a5,0(a1)
+  34:	00000613          	li	a2,0
+  38:	0005a783          	lw	a5,0(a1)
+  3c:	ffe7f793          	andi	a5,a5,-2
+  40:	00f667b3          	or	a5,a2,a5
+  44:	01079793          	slli	a5,a5,0x10
+  48:	0107d793          	srli	a5,a5,0x10
+  4c:	00f5a023          	sw	a5,0(a1)
+  50:	0006a703          	lw	a4,0(a3)
+  54:	00164613          	xori	a2,a2,1
+  58:	00a70733          	add	a4,a4,a0
+  5c:	0006a783          	lw	a5,0(a3)
+  60:	fee7eee3          	bltu	a5,a4,5c <main+0x4c>
+  64:	fd5ff06f          	j	38 <main+0x28>
