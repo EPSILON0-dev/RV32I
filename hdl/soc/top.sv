@@ -1,24 +1,26 @@
 // Memory map
-// 0x00000 - 0x00200 - Bootloader area
+// 0x00000 - 0x00800 - Bootloader area
 // 0x08000 - 0x10000 - User code
 // 0x20000 - (RW) GPIO direction reg (gpio_en)
 // 0x20004 - (R-) GPIO in reg (gpio_in)
 // 0x20008 - (RW) GPIO out reg (gpio_out)
 // 0x20010 - (RW) UART div reg
-// 0x20014 - (RW) UART data reg
-// 0x20018 - (R-) UART wait reg
+// 0x20014 - (RW) UART tx reg
+// 0x20018 - (RW) UART rx reg
+// 0x2001C - (R-) UART wait reg
 // 0x20020 - (R-) Timer reg
 
 `define BLD_START_ADDR 32'h00000
-`define BLD_END_ADDR   32'h00200
+`define BLD_END_ADDR   32'h00800
 `define CCM_START_ADDR 32'h08000
 `define CCM_END_ADDR   32'h10000
 `define GPIO_DIR_ADDR  32'h20000
 `define GPIO_IN_ADDR   32'h20004
 `define GPIO_OUT_ADDR  32'h20008
 `define UART_DIV_ADDR  32'h20010
-`define UART_DAT_ADDR  32'h20014
-`define UART_WAIT_ADDR 32'h20018
+`define UART_TX_ADDR   32'h20014
+`define UART_RX_ADDR   32'h20018
+`define UART_WAIT_ADDR 32'h2001C
 `define TIMER_ADDR     32'h20020
 
 // verilator lint_off ALL
@@ -78,19 +80,19 @@ module top (
     logic [ 3:0] uart_div_we;
     logic [31:0] uart_div_o;
     logic        uart_dat_we;
-    logic        uart_dat_re;
+    logic        uart_dat_re_gen;
     logic [31:0] uart_dat_o;
     logic        uart_dat_wait;
     simpleuart uart (
 	    .clk          (!clk),
 	    .resetn       (rstn),
-	    .ser_tx       (txd),
 	    .ser_rx       (rxd),
+	    .ser_tx       (txd),
 	    .reg_div_we   (uart_div_we),
 	    .reg_div_di   (cpu_data_o),
 	    .reg_div_do   (uart_div_o),
 	    .reg_dat_we   (uart_dat_we),
-	    .reg_dat_re   (uart_dat_re),
+	    .reg_dat_re   (uart_dat_re_gen),
 	    .reg_dat_di   (cpu_data_o),
 	    .reg_dat_do   (uart_dat_o),
 	    .reg_dat_wait (uart_dat_wait)
@@ -126,6 +128,7 @@ module top (
     logic gpio_in_re;
     logic gpio_out_re;
     logic uart_div_re;
+    logic uart_dat_re;
     logic uart_wait_re;
     logic timer_re;
     logic ccm_re;
@@ -135,6 +138,7 @@ module top (
     assign gpio_in_re   = (cpu_addr == `GPIO_IN_ADDR);
     assign gpio_out_re  = (cpu_addr == `GPIO_OUT_ADDR);
     assign uart_div_re  = (cpu_addr == `UART_DIV_ADDR);
+    assign uart_dat_re  = (cpu_addr == `UART_RX_ADDR);
     assign uart_wait_re = (cpu_addr == `UART_WAIT_ADDR);
     assign timer_re     = (cpu_addr == `TIMER_ADDR);
     assign ccm_re       = (cpu_addr >= `CCM_START_ADDR) &&
@@ -145,7 +149,7 @@ module top (
     assign gpio_en_we  = gpio_en_re && (cpu_we == 4'hf);
     assign gpio_out_we = gpio_out_re && (cpu_we == 4'hf);
     assign uart_div_we = {4{uart_div_re}} & cpu_we;
-    assign uart_dat_we = (cpu_addr == `UART_DAT_ADDR) && (cpu_we == 4'hf);
+    assign uart_dat_we = (cpu_addr == `UART_TX_ADDR) && (cpu_we == 4'hf);
     assign ccm_we      = {4{ccm_re}} & cpu_we;
 
     // Very special read signal generator
@@ -157,8 +161,8 @@ module top (
             prev_addr_r <= cpu_addr;
         end
     end
-    assign uart_dat_re = (prev_addr_r == `UART_DAT_ADDR) &&
-        (cpu_addr != `UART_DAT_ADDR);
+    assign uart_dat_re_gen = (prev_addr_r == `UART_RX_ADDR) &&
+        (cpu_addr != `UART_RX_ADDR);
 
     // CPU Read Data Selector
     assign cpu_data_i =
@@ -166,6 +170,7 @@ module top (
         gpio_in_re   ? { 16'd0, gpio_in }       :
         gpio_out_re  ? { 16'd0, gpio_out_r }    :
         uart_div_re  ? uart_div_o               :
+        uart_dat_re  ? uart_dat_o               :
         uart_wait_re ? { 31'd0, uart_dat_wait } :
         timer_re     ? timer_r                  :
         ccm_re       ? ccm_dat_o                :

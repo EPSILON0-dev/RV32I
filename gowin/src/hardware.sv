@@ -6,22 +6,12 @@ module hardware (
     inout [15:0] gpio
 );
 
-    /*
-    reg [31:0] div_r = 0;
-    reg clk_2hz = 0;
-    always @(posedge clk) begin
-        if (div_r >= 32'd6250000) begin
-            clk_2hz <= !clk_2hz;
-            div_r <= 0;
-        end else begin
-            div_r <= div_r + 32'd1;
-        end
-    end
-    */
+    logic clk_12mhz;
+    PLL pll(clk_12mhz, clk);
 
     logic [15:0] gpio_out, gpio_en;
     top top (
-        .clk      (clk),
+        .clk      (clk_12mhz),
         .rstn     (rstn),
         .rxd      (rxd),
         .txd      (txd),

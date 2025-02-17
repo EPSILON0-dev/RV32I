@@ -9,3 +9,6 @@ tests/tests/bin
 
 # IDE files
 gowin/impl
+
+# Bootloader files
+boot/build

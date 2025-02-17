@@ -4,17 +4,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#ifndef F_CPU
-#error F_CPU must be set before "hal.h" is included
-#endif
-
 #define __REG32(addr) (*((volatile uint32_t*)(addr)))
 #define GPIO_DIR  __REG32(0x20000)
 #define GPIO_IN   __REG32(0x20004)
 #define GPIO_OUT  __REG32(0x20008)
 #define UART_DIV  __REG32(0x20010)
-#define UART_DAT  __REG32(0x20014)
-#define UART_WAIT __REG32(0x20018)
+#define UART_TX   __REG32(0x20014)
+#define UART_RX   __REG32(0x20018)
+#define UART_WAIT __REG32(0x2001C)
 #define TIMER_DAT __REG32(0x20020)
 
 #define INPUT   false
@@ -36,34 +33,17 @@
 #define GPIO_14 14
 #define GPIO_15 15
 
-void gpio_set_dir(uint8_t gpio, bool dir)
-{
-    uint16_t t = GPIO_DIR & ~(1 << gpio) | (dir << gpio);
-    GPIO_DIR = t;
-}
-
-void gpio_set(uint8_t gpio, bool dir)
-{
-    uint16_t t = GPIO_DIR & ~(1 << gpio) | (dir << gpio);
-    GPIO_DIR = t;
-}
-
-bool gpio_get(uint8_t gpio)
-{
-    return !!(GPIO_DIR & (1 << gpio));
-}
-
-// TODO: Make those not inline
-uint32_t timer_get(void)
-{
-    return TIMER_DAT;
-}
-
-void delay_ms(uint32_t ms)
-{
-    const uint32_t start_time = timer_get();
-    const uint32_t end_time = start_time + (ms * (F_CPU / 1000));
-    while (timer_get() < end_time) { ;; }
-}
+void gpio_set_dir(uint8_t gpio, bool dir);
+void gpio_set(uint8_t gpio, bool dir);
+bool gpio_get(uint8_t gpio);
+void uart_set_div(uint32_t div);
+bool uart_get_wait(void);
+void uart_wait(void);
+void uart_tx(char c);
+char uart_rx(void);
+uint32_t timer_get(void);
+void delay_cycles(uint32_t cycles);
+void delay_us(uint32_t us);
+void delay_ms(uint32_t ms);
 
 #endif

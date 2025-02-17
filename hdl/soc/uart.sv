@@ -51,8 +51,9 @@ module simpleuart #(parameter integer DEFAULT_DIV = 1) (
 
 	assign reg_div_do = cfg_divider;
 
+	// Wait behaviour was modified since we don't have memory wait states here
     // verilator lint_off width
-	assign reg_dat_wait = reg_dat_we && (send_bitcnt || send_dummy);
+	assign reg_dat_wait = (send_bitcnt || send_dummy);
 	assign reg_dat_do = recv_buf_valid ? recv_buf_data : ~0;
     // verilator lint_on width
 

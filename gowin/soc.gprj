@@ -6,10 +6,11 @@
     <Device name="GW1NR-9C" pn="GW1NR-LV9QN88PC6/I5">gw1nr9c-004</Device>
     <FileList>
         <File path="src/hardware.sv" type="file.verilog" enable="1"/>
-        <File path="/home/epsilon/Documents/RV32I/hdl/soc/rom.sv" type="file.verilog" enable="1"/>
-        <File path="/home/epsilon/Documents/RV32I/hdl/soc/top.sv" type="file.verilog" enable="1"/>
-        <File path="/home/epsilon/Documents/RV32I/hdl/soc/uart.sv" type="file.verilog" enable="1"/>
-        <File path="/home/epsilon/Documents/RV32I/hdl/core/cpu.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/pll.v" type="file.verilog" enable="1"/>
+        <File path="../hdl/soc/rom.sv" type="file.verilog" enable="1"/>
+        <File path="../hdl/soc/top.sv" type="file.verilog" enable="1"/>
+        <File path="../hdl/soc/uart.sv" type="file.verilog" enable="1"/>
+        <File path="../hdl/core/cpu.vhd" type="file.vhdl" enable="1"/>
         <File path="src/soc.cst" type="file.cst" enable="1"/>
     </FileList>
 </Project>

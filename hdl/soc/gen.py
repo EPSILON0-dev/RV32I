@@ -4,7 +4,7 @@ from sys import argv, exit
 def get_file(filename) -> bytes:
     with open(filename, 'rb') as f:
         b = f.read()
-        if len(b) % 4 != 0 or len(b) > 2048:
+        if len(b) > 2048:
             print('Malformated or too big file')
             exit(1)
     while len(b) < 2048:
