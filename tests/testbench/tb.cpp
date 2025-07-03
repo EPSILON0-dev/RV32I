@@ -4,7 +4,8 @@
 #include "verilated_vcd_c.h"
 #include "VCPU.h"
 
-#define DEBUG_WRITES 1
+#define DEBUG_WRITES 0
+
 #if DEBUG_WRITES != 0
 #define MAX_CYCLES 100000
 #else

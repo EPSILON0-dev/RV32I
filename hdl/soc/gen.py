@@ -1,5 +1,12 @@
-from sys import argv, exit
+'''
+    gen.py -- Convert a binary into a memory image (rom.sv).
 
+    Usage:
+        python3 gen.py <file_to_translate>
+        python3 gen.py ../../boot/build/bootloader.hex
+'''
+
+from sys import argv, exit
 
 def get_file(filename) -> bytes:
     with open(filename, 'rb') as f:

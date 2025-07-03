@@ -1,5 +1,7 @@
-# In general march=rv32i should be used but I don't have a multilib configured
-#  for it rn.
+# EDIT ME!
+GCC_PATH    ?= /home/epsilon/Documents/compilers/riscv/bin
+GCC_PREFIX  ?= riscv64-unknown-elf-
+
 CC          := $(GCC_PATH)/$(GCC_PREFIX)gcc
 OBJCOPY     := $(GCC_PATH)/$(GCC_PREFIX)objcopy
 OBJDUMP     := $(GCC_PATH)/$(GCC_PREFIX)objdump

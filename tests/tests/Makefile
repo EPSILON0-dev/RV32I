@@ -1,3 +1,7 @@
+# EDIT ME!
+GCC_PATH    ?= /home/epsilon/Documents/compilers/riscv/bin
+GCC_PREFIX  ?= riscv64-unknown-elf-
+
 SRC_DIR := src
 BIN_DIR := bin
 SOURCES := $(wildcard $(SRC_DIR)/*.S)

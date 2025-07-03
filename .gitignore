@@ -12,3 +12,6 @@ gowin/impl
 
 # Bootloader files
 boot/build
+
+# clangd cache
+.cache

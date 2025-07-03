@@ -9,6 +9,9 @@
 #define WRITE_LOOP_LIMIT     16
 #define BAUD_RATE            9600
 
+// Run "function"
+void (*run)(void) = (void (*)(void))(ALLOWED_REGION_START);
+
 // Messages
 const char *intro = "\r\n\nRV32I bootloader v1.0, written by EPSILON0\r\n";
 const char *error_command = "I don't know this command :c\r\n";
@@ -90,7 +93,7 @@ void exec_cmd(void)
 
     // Handle run command
     if ((cmdbuff[0] == 'r' || cmdbuff[0] == 'R') && cmdbuff[1] == '\r')
-        goto *((void*)(ALLOWED_REGION_START));
+        run();
 
     // Get the first address
     const size_t addr_1 = str_to_hex(cmdbuff);
@@ -163,10 +166,10 @@ void exec_cmd(void)
 
 int main(void)
 {
-    // Go straight to the code if ISP button not pressed
+    // Go straight to the code if ISP button not pressed 
     gpio_set_dir(ISP_BUTTON_GPIO, INPUT);
     if (gpio_get(ISP_BUTTON_GPIO) == true)
-        goto *((void*)(ALLOWED_REGION_START));
+        run();
 
     // Say haiii
     uart_set_div(F_CPU / BAUD_RATE);

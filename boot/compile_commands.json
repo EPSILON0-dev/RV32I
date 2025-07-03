@@ -1,0 +1,58 @@
+[
+  {
+    "arguments": [
+      "/home/epsilon/Documents/compilers/riscv/bin/riscv64-unknown-elf-gcc",
+      "-c",
+      "-march=rv32i_zicsr",
+      "-mabi=ilp32",
+      "--std=c99",
+      "-I../hal",
+      "-Os",
+      "-g",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-DF_CPU=12000000",
+      "-o",
+      "build/bootloader.o",
+      "src/bootloader.c"
+    ],
+    "directory": "/home/epsilon/Documents/RV32I/boot",
+    "file": "/home/epsilon/Documents/RV32I/boot/src/bootloader.c",
+    "output": "/home/epsilon/Documents/RV32I/boot/build/bootloader.o"
+  },
+  {
+    "arguments": [
+      "/home/epsilon/Documents/compilers/riscv/bin/riscv64-unknown-elf-gcc",
+      "-c",
+      "-march=rv32i_zicsr",
+      "-mabi=ilp32",
+      "-o",
+      "build/start.o",
+      "src/start.S"
+    ],
+    "directory": "/home/epsilon/Documents/RV32I/boot",
+    "file": "/home/epsilon/Documents/RV32I/boot/src/start.S",
+    "output": "/home/epsilon/Documents/RV32I/boot/build/start.o"
+  },
+  {
+    "arguments": [
+      "/home/epsilon/Documents/compilers/riscv/bin/riscv64-unknown-elf-gcc",
+      "-c",
+      "-march=rv32i_zicsr",
+      "-mabi=ilp32",
+      "--std=c99",
+      "-I../hal",
+      "-Os",
+      "-g",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-DF_CPU=12000000",
+      "-o",
+      "build/hal.o",
+      "../hal/hal.c"
+    ],
+    "directory": "/home/epsilon/Documents/RV32I/boot",
+    "file": "/home/epsilon/Documents/RV32I/hal/hal.c",
+    "output": "/home/epsilon/Documents/RV32I/boot/build/hal.o"
+  }
+]
