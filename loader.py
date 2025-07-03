@@ -22,7 +22,7 @@ def load_file(filename):
 
 
 def connect_serial(port: str) -> Serial:
-    ser = Serial(port, BAUD_RATE)
+    ser = Serial(port, BAUD_RATE, timeout=1)
     ser.write(b'\r')
     sleep(0.01)
     ser.write(b'\r')
@@ -51,6 +51,15 @@ def parse_read_data(data: str) -> list[int]:
     return nums
 
 
+def calculate_read_timeout(words: int, baud_rate: int) -> float:
+    timeout = words
+    timeout *= 16                # Around 16 chars per word
+    timeout *= 10                # 10 bauds per character
+    timeout /= float(baud_rate)  # Divide by baudrate
+    timeout *= 1.25              # Generous error margin
+    return timeout
+
+
 def read_words(ser: Serial, addr: int, words: int) -> list[int]:
     ser.write(b'\r')
     ser.flush()
@@ -58,9 +67,8 @@ def read_words(ser: Serial, addr: int, words: int) -> list[int]:
     ser.read_all()
     cmd = bytes(f'{addr:08X}.{addr+words*4:08X}\r', encoding='ascii')
     ser.write(cmd)
-    ser.flush()
-    sleep((words * 16 * 10) / BAUD_RATE)
-    resp = ser.readall()
+    ser.timeout = calculate_read_timeout(words, BAUD_RATE)
+    resp = ser.read_until('>')  # As if it worked...
     return parse_read_data(resp)
 
 
@@ -88,6 +96,27 @@ def prepare_write_chunks(data: bytes) -> list[list[int]]:
     return words_to_chunks(bytes_to_words(data), WRITE_LENGTH)
 
 
+def words_to_bytes(words: list[int]) -> list[int]:
+    return sum([[
+        (w >>  0) & 0xff,
+        (w >>  8) & 0xff,
+        (w >> 16) & 0xff,
+        (w >> 24) & 0xff
+    ] for w in words], [])
+
+
+def compare(actual_bytes: list[int], expected_bytes: list[int], offset_words: int, length_words: int) -> bool:
+    error = False
+    try:
+        for i in range(length_words * 4):
+            if (actual_bytes[i] != expected_bytes[i + offset_words * 4]):
+                error = True
+                print(f"Mismatch on byte 0x{offset_words * 4 + i:x}")
+    except IndexError:
+        pass
+    return error
+
+
 def main():
     args = get_args()
     data = load_file(args.filename)
@@ -99,6 +128,21 @@ def main():
         print(f'\rWriting: {(i + 1) / len(write_chunks) * 100:.0f}%', end='')
         write_words(ser, write_addr, chunk)
         write_addr += len(chunk) * 4
+    print('\rWriting: Done!')
+
+    read_addr = 0x8000
+    read_chunk_count = ceil(len(data) / (READ_LENGTH * 4))
+    verify_error = False
+    for i in range(read_chunk_count):
+        print(f'\rReading: {(i + 1) / read_chunk_count * 100:.0f}%', end='')
+        words = read_words(ser, read_addr, READ_LENGTH)
+        bytes = words_to_bytes(words)
+        verify_error |= compare(bytes, data, (i * READ_LENGTH), READ_LENGTH)
+        read_addr += READ_LENGTH * 4
+    print('\rReading: Done!')
+
+    if not verify_error:
+        print('Verified: Okay!')
 
     ser.close()
 

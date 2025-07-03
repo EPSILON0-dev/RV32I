@@ -9,14 +9,11 @@
 #define WRITE_LOOP_LIMIT     16
 #define BAUD_RATE            9600
 
-// Run "function"
-void (*run)(void) = (void (*)(void))(ALLOWED_REGION_START);
-
 // Messages
 const char *intro = "\r\n\nRV32I bootloader v1.0, written by EPSILON0\r\n";
-const char *error_command = "I don't know this command :c\r\n";
-const char *error_misaligned = "Misaligned access :c\r\n";
-const char *error_region = "Can't access this region :c\r\n";
+const char *error_command = "Unknown command\r\n";
+const char *error_access = "Memory access error\r\n";
+const char *running = "Running\r\n";
 
 // Buffer
 static char cmdbuff[CMDBUFF_SIZE];
@@ -62,15 +59,9 @@ uint32_t str_to_hex(const char *ptr)
 
 bool check_access(size_t addr)
 {
-    if (addr & 0b11)
+    if (addr & 0b11 || addr < ALLOWED_REGION_START || addr >= ALLOWED_REGION_END)
     {
-        print_str(error_misaligned);
-        return false;
-    }
-
-    if (addr < ALLOWED_REGION_START || addr >= ALLOWED_REGION_END)
-    {
-        print_str(error_region);
+        print_str(error_access);
         return false;
     }
 
@@ -85,6 +76,14 @@ uint32_t mem_read(size_t addr)
 void mem_write(size_t addr, uint32_t dat)
 {
     if (check_access(addr)) *((uint32_t*)(addr)) = dat;
+}
+
+void run()
+{
+    print_str(running);
+    uintptr_t run_address = ALLOWED_REGION_START;
+    void (*run_call)(void) = (void (*)(void))run_address;
+    run_call();
 }
 
 void exec_cmd(void)
@@ -115,7 +114,7 @@ void exec_cmd(void)
         const size_t addr_2 = str_to_hex(&cmdbuff[index + 1]);
         if (addr_2 & 0b11)
         {
-            print_str(error_misaligned);
+            print_str(error_access);
             return;
         }
 
