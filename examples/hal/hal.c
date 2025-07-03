@@ -6,13 +6,13 @@
 
 void gpio_set_dir(uint8_t gpio, bool dir)
 {
-    uint16_t t = GPIO_DIR & ~(1 << gpio) | (dir << gpio);
+    uint32_t t = GPIO_DIR & ~(1 << gpio) | (dir << gpio);
     GPIO_DIR = t;
 }
 
 void gpio_set(uint8_t gpio, bool val)
 {
-    uint16_t t = GPIO_OUT & ~(1 << gpio) | (val << gpio);
+    uint32_t t = GPIO_OUT & ~(1 << gpio) | (val << gpio);
     GPIO_OUT = t;
 }
 

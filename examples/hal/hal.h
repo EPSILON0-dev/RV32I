@@ -32,6 +32,22 @@
 #define GPIO_13 13
 #define GPIO_14 14
 #define GPIO_15 15
+#define GPIO_16 16
+#define GPIO_17 17
+#define GPIO_18 18
+#define GPIO_19 19
+#define GPIO_20 20
+#define GPIO_21 21
+#define GPIO_22 22
+#define GPIO_23 23
+#define GPIO_24 24
+#define GPIO_25 25
+#define GPIO_26 26
+#define GPIO_27 27
+#define GPIO_28 28
+#define GPIO_29 29
+#define GPIO_30 30
+#define GPIO_31 31
 
 void gpio_set_dir(uint8_t gpio, bool dir);
 void gpio_set(uint8_t gpio, bool dir);

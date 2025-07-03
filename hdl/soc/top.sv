@@ -1,15 +1,3 @@
-// Memory map
-// 0x00000 - 0x00800 - Bootloader area
-// 0x08000 - 0x10000 - User code
-// 0x20000 - (RW) GPIO direction reg (gpio_en)
-// 0x20004 - (R-) GPIO in reg (gpio_in)
-// 0x20008 - (RW) GPIO out reg (gpio_out)
-// 0x20010 - (RW) UART div reg
-// 0x20014 - (RW) UART tx reg
-// 0x20018 - (RW) UART rx reg
-// 0x2001C - (R-) UART wait reg
-// 0x20020 - (R-) Timer reg
-
 `define BLD_START_ADDR 32'h00000
 `define BLD_END_ADDR   32'h00800
 `define CCM_START_ADDR 32'h08000
@@ -29,9 +17,9 @@ module top (
     input         rstn,
     input         rxd,
     output        txd,
-    input  [15:0] gpio_in,
-    output [15:0] gpio_out,
-    output [15:0] gpio_en
+    input  [31:0] gpio_in,
+    output [31:0] gpio_out,
+    output [31:0] gpio_en
 );
 
     // CPU Module
@@ -109,8 +97,8 @@ module top (
     end
 
     // GPIO module
-    reg [15:0] gpio_en_r;
-    reg [15:0] gpio_out_r;
+    reg [31:0] gpio_en_r;
+    reg [31:0] gpio_out_r;
     logic gpio_en_we;
     logic gpio_out_we;
     always @(negedge clk) begin
@@ -118,8 +106,8 @@ module top (
             gpio_en_r <= 0;
             gpio_out_r <= 0;
         end else begin
-            if (gpio_en_we) gpio_en_r <= cpu_data_o[15:0];
-            if (gpio_out_we) gpio_out_r <= cpu_data_o[15:0];
+            if (gpio_en_we) gpio_en_r <= cpu_data_o[31:0];
+            if (gpio_out_we) gpio_out_r <= cpu_data_o[31:0];
         end
     end
 
@@ -166,9 +154,9 @@ module top (
 
     // CPU Read Data Selector
     assign cpu_data_i =
-        gpio_en_re   ? { 16'd0, gpio_en_r }     :
-        gpio_in_re   ? { 16'd0, gpio_in }       :
-        gpio_out_re  ? { 16'd0, gpio_out_r }    :
+        gpio_en_re   ? { gpio_en_r }            :
+        gpio_in_re   ? { gpio_in }              :
+        gpio_out_re  ? { gpio_out_r }           :
         uart_div_re  ? uart_div_o               :
         uart_dat_re  ? uart_dat_o               :
         uart_wait_re ? { 31'd0, uart_dat_wait } :
