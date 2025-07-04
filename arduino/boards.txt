@@ -1,0 +1,55 @@
+# Menu options
+menu.clock=Clock
+menu.tone=Tone Mode
+menu.pwm=analogWrite Mode
+menu.analog=analogRead Mode
+menu.serial=Serial Mode
+
+###############
+#### RV32I ####
+###############
+
+# General
+rv32i.name=RV32I
+
+# Clocks
+rv32i.menu.clock.32MHz=20 MHz
+rv32i.menu.clock.32MHz.build.f_cpu=20000000L
+rv32i.menu.clock.24MHz=20 MHz
+rv32i.menu.clock.24MHz.build.f_cpu=20000000L
+rv32i.menu.clock.20MHz=20 MHz
+rv32i.menu.clock.20MHz.build.f_cpu=20000000L
+rv32i.menu.clock.16MHz=16 MHz
+rv32i.menu.clock.16MHz.build.f_cpu=16000000L
+rv32i.menu.clock.12MHz=12 MHz
+rv32i.menu.clock.12MHz.build.f_cpu=12000000L
+rv32i.menu.clock.8MHz=8 MHz
+rv32i.menu.clock.8MHz.build.f_cpu=8000000L
+rv32i.menu.clock.6MHz=6 MHz
+rv32i.menu.clock.6MHz.build.f_cpu=6000000L
+rv32i.menu.clock.4MHz=4 MHz
+rv32i.menu.clock.4MHz.build.f_cpu=4000000L
+rv32i.menu.clock.2MHz=2 MHz
+rv32i.menu.clock.2MHz.build.f_cpu=2000000L
+rv32i.menu.clock.1MHz=1 MHz
+rv32i.menu.clock.1MHz.build.f_cpu=1000000L
+
+rv32i.menu.tone.ign=Ignored
+rv32i.menu.tone.ign.build.tone_define=1
+rv32i.menu.tone.err=Error
+rv32i.menu.tone.err.build.tone_define=0
+
+rv32i.menu.pwm.ign=Ignored
+rv32i.menu.pwm.ign.build.pwm_define=1
+rv32i.menu.pwm.err=Error
+rv32i.menu.pwm.err.build.pwm_define=0
+
+rv32i.menu.analog.ign=Ignored
+rv32i.menu.analog.ign.build.analog_define=1
+rv32i.menu.analog.err=Error
+rv32i.menu.analog.err.build.analog_define=0
+
+rv32i.menu.tone.force=Force 9600 baud
+rv32i.menu.tone.force.build.force_baud_rate=1
+rv32i.menu.tone.actual=Actual frequency
+rv32i.menu.tone.actual.build.force_baud_rate=0

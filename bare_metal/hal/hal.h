@@ -49,6 +49,10 @@
 #define GPIO_30 30
 #define GPIO_31 31
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void gpio_set_dir(uint8_t gpio, bool dir);
 void gpio_set(uint8_t gpio, bool dir);
 bool gpio_get(uint8_t gpio);
@@ -61,5 +65,9 @@ uint32_t timer_get(void);
 void delay_cycles(uint32_t cycles);
 void delay_us(uint32_t us);
 void delay_ms(uint32_t ms);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

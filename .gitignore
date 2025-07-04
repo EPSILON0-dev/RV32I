@@ -10,8 +10,7 @@ tests/tests/bin
 # IDE files
 gowin/impl
 
-# Bootloader files
-boot/build
-
-# clangd cache
+# All build directories, clang caches, and bear compile_commands
+build
 .cache
+compile_commands.json

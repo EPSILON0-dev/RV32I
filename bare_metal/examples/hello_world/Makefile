@@ -11,12 +11,12 @@ CC_FLAGS    += -ffunction-sections -fdata-sections -DF_CPU=12000000
 LINK_FLAGS  := -march=rv32i_zicsr -mabi=ilp32 -nostartfiles -Tlink.ld
 LINK_FLAGS  += -Wl,--gc-sections -Wl,--print-memory-usage
 
-ASM_SOURCES := src/start.S
-C_SOURCES   := src/bootloader.c
-TARGET      := build/bootloader
+ASM_SOURCES := start.S
+C_SOURCES   := main.c
+TARGET      := build/hello_world
 
-OBJECTS     := $(patsubst src/%.c, build/%.o, $(C_SOURCES))
-OBJECTS     += $(patsubst src/%.S, build/%.o, $(ASM_SOURCES))
+OBJECTS     := $(patsubst %.c, build/%.o, $(C_SOURCES))
+OBJECTS     += $(patsubst %.S, build/%.o, $(ASM_SOURCES))
 OBJECTS     += build/hal.o
 BINARY      := $(patsubst %, %.hex, $(TARGET))
 LISTING     := $(patsubst %, %.lst, $(TARGET))
@@ -27,12 +27,12 @@ build:
 	mkdir build
 
 build/hal.o:
-	$(CC) -c $(CC_FLAGS) -o $@ ../hal/hal.c
+	$(CC) -c $(CC_FLAGS) -o $@ ../../hal/hal.c
 
-build/%.o: src/%.S
+build/%.o: %.S
 	$(CC) -c $(AS_FLAGS) -o $@ $<
 
-build/%.o: src/%.c
+build/%.o: %.c
 	$(CC) -c $(CC_FLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
