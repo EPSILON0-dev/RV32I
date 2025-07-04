@@ -17,16 +17,19 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Modified by EPSILON0-dev on 04.07.2025
 */
 
 #ifndef String_class_h
 #define String_class_h
 #ifdef __cplusplus
 
+#include "common.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <avr/pgmspace.h>
 
 // When compiling programs with this class, the following gcc parameters
 // dramatically increase performance and memory (RAM) efficiency, typically

@@ -31,7 +31,7 @@
 
 namespace std {
   // Defined in abi.cpp
-  void terminate();
+  // void terminate();
 
   const nothrow_t nothrow;
 }

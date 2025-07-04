@@ -20,6 +20,8 @@
 */
 
 #include "WString.h"
+#include <string.h>
+#include <stdlib.h>
 
 /*********************************************/
 /*  Constructors                             */
@@ -93,7 +95,7 @@ String::String(long value, unsigned char base)
 {
 	init();
 	char buf[2 + 8 * sizeof(long)];
-	ltoa(value, buf, base);
+	itoa(value, buf, base);
 	*this = buf;
 }
 
@@ -101,7 +103,7 @@ String::String(unsigned long value, unsigned char base)
 {
 	init();
 	char buf[1 + 8 * sizeof(unsigned long)];
-	ultoa(value, buf, base);
+	utoa(value, buf, base);
 	*this = buf;
 }
 
@@ -109,14 +111,16 @@ String::String(float value, unsigned char decimalPlaces)
 {
 	init();
 	char buf[33];
-	*this = dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
+	// TODO
+	*this = (const char*)malloc(sizeof(String)); // dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
 }
 
 String::String(double value, unsigned char decimalPlaces)
 {
 	init();
 	char buf[33];
-	*this = dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
+	// TODO
+	*this = (const char*)malloc(sizeof(String)); // dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
 }
 
 String::~String()
@@ -185,7 +189,7 @@ String & String::copy(const __FlashStringHelper *pstr, unsigned int length)
 		return *this;
 	}
 	len = length;
-	strcpy_P(buffer, (PGM_P)pstr);
+	strcpy(buffer, (char*)pstr);
 	return *this;
 }
 
@@ -245,7 +249,7 @@ String & String::operator = (const char *cstr)
 
 String & String::operator = (const __FlashStringHelper *pstr)
 {
-	if (pstr) copy(pstr, strlen_P((PGM_P)pstr));
+	if (pstr) copy(pstr, strlen((const char*)pstr));
 	else invalidate();
 
 	return *this;
@@ -309,39 +313,41 @@ unsigned char String::concat(unsigned int num)
 unsigned char String::concat(long num)
 {
 	char buf[2 + 3 * sizeof(long)];
-	ltoa(num, buf, 10);
+	utoa(num, buf, 10);
 	return concat(buf, strlen(buf));
 }
 
 unsigned char String::concat(unsigned long num)
 {
 	char buf[1 + 3 * sizeof(unsigned long)];
-	ultoa(num, buf, 10);
+	utoa(num, buf, 10);
 	return concat(buf, strlen(buf));
 }
 
 unsigned char String::concat(float num)
 {
 	char buf[20];
-	char* string = dtostrf(num, 4, 2, buf);
+	// TODO
+	char* string = 0; // dtostrf(num, 4, 2, buf);
 	return concat(string, strlen(string));
 }
 
 unsigned char String::concat(double num)
 {
 	char buf[20];
-	char* string = dtostrf(num, 4, 2, buf);
+	// TODO
+	char* string = 0; // dtostrf(num, 4, 2, buf);
 	return concat(string, strlen(string));
 }
 
 unsigned char String::concat(const __FlashStringHelper * str)
 {
 	if (!str) return 0;
-	int length = strlen_P((const char *) str);
+	int length = strlen((const char *) str);
 	if (length == 0) return 1;
 	unsigned int newlen = len + length;
 	if (!reserve(newlen)) return 0;
-	strcpy_P(buffer + len, (const char *) str);
+	strcpy(buffer + len, (const char *) str);
 	len = newlen;
 	return 1;
 }

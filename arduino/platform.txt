@@ -19,7 +19,7 @@ compiler.cpp.flags=-c -g -Os -march=rv32i_zicsr -mabi=ilp32 --std=gnu++17 -ffunc
 compiler.ar.flags=rcs
 
 # Linker flags
-compiler.ldflags=-march=rv32i_zicsr -mabi=ilp32 -nostartfiles -Tlink.ld -Wl,--gc-sections -Wl,--print-memory-usage
+compiler.ldflags=-march=rv32i_zicsr -mabi=ilp32 -nostartfiles -T{runtime.platform.path}/link.ld -Wl,--gc-sections -Wl,--print-memory-usage
 
 # Recipe patterns
 recipe.c.o.pattern="{compiler.c.cmd}" {compiler.c.flags} {compiler.extra_flags} -I../hal {includes} "{source_file}" -o "{object_file}"

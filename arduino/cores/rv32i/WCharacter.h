@@ -22,6 +22,8 @@
 
 #include <ctype.h>
 
+typedef bool boolean;
+
 // WCharacter.h prototypes
 inline boolean isAlphaNumeric(int c) __attribute__((always_inline));
 inline boolean isAlpha(int c) __attribute__((always_inline));
