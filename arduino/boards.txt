@@ -11,6 +11,8 @@ menu.serial=Serial Mode
 
 # General
 rv32i.name=RV32I
+rv32i.build.core=rv32i
+rv32i.build.board=EE_RV32I
 
 # Clocks
 rv32i.menu.clock.32MHz=20 MHz
@@ -49,7 +51,7 @@ rv32i.menu.analog.ign.build.analog_define=1
 rv32i.menu.analog.err=Error
 rv32i.menu.analog.err.build.analog_define=0
 
-rv32i.menu.tone.force=Force 9600 baud
-rv32i.menu.tone.force.build.force_baud_rate=1
-rv32i.menu.tone.actual=Actual frequency
-rv32i.menu.tone.actual.build.force_baud_rate=0
+rv32i.menu.serial.force=Force 9600 baud
+rv32i.menu.serial.force.build.force_baud_rate=1
+rv32i.menu.serial.actual=Actual frequency
+rv32i.menu.serial.actual.build.force_baud_rate=0
