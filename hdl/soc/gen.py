@@ -3,7 +3,7 @@
 
     Usage:
         python3 gen.py <file_to_translate>
-        python3 gen.py ../../boot/build/bootloader.hex
+        python3 gen.py ../../bare_metal/boot/build/bootloader.hex
 '''
 
 from sys import argv, exit

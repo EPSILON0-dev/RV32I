@@ -1,3 +1,24 @@
+"""
+Firmware loader script for uploading and verifying firmware over a serial connection.
+
+This script reads a binary firmware file and writes it to a target device via a serial port.
+It supports chunked writing and optional verification by reading back the written data.
+The script uses a fixed baud rate and communicates with the device using a simple ASCII protocol.
+
+Usage:
+    python loader.py <filename> <serial_port> [--no-verify]
+
+Arguments:
+    filename      Path to the binary firmware file to be loaded.
+    serial_port   Serial port device to connect to (e.g., /dev/ttyUSB0).
+    --no-verify   Optional flag to disable verification after writing.
+
+Constants:
+    BAUD_RATE     Serial communication baud rate (9600).
+    WRITE_LENGTH  Number of 32-bit words to write per chunk.
+    READ_LENGTH   Number of 32-bit words to read per verification chunk.
+"""
+
 from argparse import ArgumentParser
 from serial import Serial
 from time import sleep

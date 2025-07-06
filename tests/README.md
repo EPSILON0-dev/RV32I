@@ -1,20 +1,26 @@
 # CPU Tests
-These tests test all of the CPU features (which is only the ISA). Tests come
-from the official RISCV tests repositiory and were slightly modified to run
-on this core.
 
-## Running tests
+This directory contains tests that verify the functionality of the CPU, specifically focusing on the RV32I ISA implementation. The tests are derived from the official RISC-V test repository and have been slightly modified to work with this core.
+
+## Running the Tests
+
+To run the tests, use the following commands:
+
 ```bash
-make test GCC_PATH=<YOUR_GCC_PATH> GCC_PREFIX=<YOUR_GCC_PATH>
-make clean
+make test GCC_PATH=<YOUR_GCC_PATH> GCC_PREFIX=<YOUR_GCC_PREFIX>
 ```
-Make sure to set the GCC path and prefix. Also make sure your GCC supports the
-RV32I architecture with ILP32 ABI.
 
-## Dependancies
- * python3
- * Makefile
- * gcc (normal)
- * gcc (cross-riscv)
- * Verilator
- * ghdl
+Replace `<YOUR_GCC_PATH>` and `<YOUR_GCC_PREFIX>` with the appropriate paths for your RISC-V GCC toolchain. Ensure that your GCC supports the RV32I architecture with the ILP32 ABI.
+
+## Dependencies
+
+The following tools and packages are required to build and run the tests:
+
+- Python 3
+- Make
+- GCC (native)
+- GCC (cross-compiler for RISC-V)
+- Verilator
+- GHDL
+
+Make sure all dependencies are installed and properly configured before running the tests.
