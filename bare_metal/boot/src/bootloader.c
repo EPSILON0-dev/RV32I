@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <hal.h>
 
-#define ISP_BUTTON_GPIO      GPIO_6
+#define ACTIVITY_LED_0       GPIO_0
 #define ALLOWED_REGION_START 0x08000
 #define ALLOWED_REGION_END   0x10000
 #define CMDBUFF_SIZE         128
@@ -13,7 +13,7 @@
 const char *intro = "\r\n\nRV32I bootloader v1.0, written by EPSILON0\r\n";
 const char *error_command = "Unknown command\r\n";
 const char *error_access = "Memory access error\r\n";
-const char *running = "Running\r\n";
+const char *running = "Starting...\r\n";
 
 // Buffer
 static char cmdbuff[CMDBUFF_SIZE];
@@ -89,10 +89,14 @@ void run()
 void exec_cmd(void)
 {
     size_t index = 0;
+    gpio_set(ACTIVITY_LED_0, 1);
 
     // Handle run command
     if ((cmdbuff[0] == 'r' || cmdbuff[0] == 'R') && cmdbuff[1] == '\r')
+    {
+        gpio_set(ACTIVITY_LED_0, 0);
         run();
+    }
 
     // Get the first address
     const size_t addr_1 = str_to_hex(cmdbuff);
@@ -165,11 +169,6 @@ void exec_cmd(void)
 
 int main(void)
 {
-    // Go straight to the code if ISP button not pressed 
-    gpio_set_dir(ISP_BUTTON_GPIO, INPUT);
-    if (gpio_get(ISP_BUTTON_GPIO) == true)
-        run();
-
     // Say haiii
     uart_set_div(F_CPU / BAUD_RATE);
     delay_ms(10);
@@ -190,6 +189,7 @@ int main(void)
             buff_index = 0;
             exec_cmd();
             print_str("> ");
+            gpio_set(ACTIVITY_LED_0, 0);
         }
     }
 }

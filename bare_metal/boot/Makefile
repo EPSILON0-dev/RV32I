@@ -7,7 +7,7 @@ OBJCOPY     := $(GCC_PATH)/$(GCC_PREFIX)objcopy
 OBJDUMP     := $(GCC_PATH)/$(GCC_PREFIX)objdump
 AS_FLAGS    := -march=rv32i_zicsr -mabi=ilp32
 CC_FLAGS    := -march=rv32i_zicsr -mabi=ilp32 --std=c99 -I../hal -Os -g
-CC_FLAGS    += -ffunction-sections -fdata-sections -DF_CPU=12000000
+CC_FLAGS    += -ffunction-sections -fdata-sections -DF_CPU=18000000
 LINK_FLAGS  := -march=rv32i_zicsr -mabi=ilp32 -nostartfiles -Tlink.ld
 LINK_FLAGS  += -Wl,--gc-sections -Wl,--print-memory-usage
 

@@ -34,6 +34,9 @@
 #endif
 #define BIN 2
 
+void dump_regs();
+void dump_address(uintptr_t);
+
 class Print
 {
   private:

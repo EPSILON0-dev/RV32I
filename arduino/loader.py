@@ -13,6 +13,7 @@ def get_args():
     parser = ArgumentParser("Firmware loader")
     parser.add_argument("filename")
     parser.add_argument("serial")
+    parser.add_argument("--no-verify", help="Disable verification", action='store_true')
     return parser.parse_args()
 
 
@@ -133,13 +134,14 @@ def main():
     read_addr = 0x8000
     read_chunk_count = ceil(len(data) / (READ_LENGTH * 4))
     verify_error = False
-    for i in range(read_chunk_count):
-        print(f'\rReading: {(i + 1) / read_chunk_count * 100:.0f}%', end='')
-        words = read_words(ser, read_addr, READ_LENGTH)
-        bytes = words_to_bytes(words)
-        verify_error |= compare(bytes, data, (i * READ_LENGTH), READ_LENGTH)
-        read_addr += READ_LENGTH * 4
-    print('\rReading: Done!')
+    if not args.no_verify:
+        for i in range(read_chunk_count):
+            print(f'\rReading: {(i + 1) / read_chunk_count * 100:.0f}%', end='')
+            words = read_words(ser, read_addr, READ_LENGTH)
+            bytes = words_to_bytes(words)
+            verify_error |= compare(bytes, data, (i * READ_LENGTH), READ_LENGTH)
+            read_addr += READ_LENGTH * 4
+        print('\rReading: Done!')
 
     if not verify_error:
         print('Verified: Okay!')

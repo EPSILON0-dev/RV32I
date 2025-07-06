@@ -36,7 +36,7 @@
 void HardwareSerial::begin(unsigned long baud, byte config)
 {
   (void)config;
-#if __SERIAL_FORCE_9600
+#if __SERIAL_FORCE_9600 == 1
   UART_DIV = F_CPU / 9600;
 #else
   UART_DIV = F_CPU / baud;
@@ -71,7 +71,14 @@ size_t HardwareSerial::write(uint8_t c)
 {
   while (!!UART_WAIT) { ;; }
   UART_TX = c;
-  return 0;
+  return 1;
+}
+
+size_t HardwareSerial::write(const uint8_t *buffer, size_t size)
+{
+  while (size--)
+    write(*(buffer++));
+  return size;
 }
 
 void HardwareSerial::flush()

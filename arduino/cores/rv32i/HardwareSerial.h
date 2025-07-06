@@ -31,16 +31,15 @@
 #include "Stream.h"
 
 // Buffers? What are those? We're rawdogging the comms here
-// And configs? What are you some deviant? What's wring with 9600-8N1?
+// And configs? What are you some deviant? What's wrong with 9600-8N1?
 
 class HardwareSerial : public Stream
 {
   protected:
     uint8_t last_char;
-    // Has any byte been written to the UART since begin()
-    bool _written;
 
   public:
+    HardwareSerial() = default;
     void begin(unsigned long baud) { begin(baud, 0); }
     void begin(unsigned long, uint8_t);
     void end();
@@ -50,6 +49,7 @@ class HardwareSerial : public Stream
     virtual int availableForWrite(void);
     virtual void flush(void);
     virtual size_t write(uint8_t);
+    virtual size_t write(const uint8_t *, size_t);
     inline size_t write(unsigned long n) { return write((uint8_t)n); }
     inline size_t write(long n) { return write((uint8_t)n); }
     inline size_t write(unsigned int n) { return write((uint8_t)n); }

@@ -2,12 +2,12 @@
 OUTPUT_ARCH("riscv")
 ENTRY(_start)
 
-__stack_size = 1024;
-PROVIDE(_stack_size = __stack_size);
+__stack_size = 2048;
 
 MEMORY
 {
-    MEMORY_ALL (rwx) : ORIGIN = 0x08000, LENGTH = 32K
+    FLASH (rx) : ORIGIN = 0x8000, LENGTH = 26K
+    RAM   (rw) : ORIGIN = 0xE800, LENGTH = 6K
 }
 
 SECTIONS
@@ -19,7 +19,7 @@ SECTIONS
         KEEP(*(SORT_NONE(.init)))
         . = ALIGN(4);
         _einit = .;
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .text :
     {
@@ -30,13 +30,13 @@ SECTIONS
         *(.rodata*)
         *(.gnu.linkonce.t.*)
         . = ALIGN(4);
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .fini :
         {
           KEEP(*(SORT_NONE(.fini)))
       . = ALIGN(4);
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     PROVIDE( _etext = . );
     PROVIDE( _eitcm = . );
@@ -46,32 +46,51 @@ SECTIONS
         PROVIDE_HIDDEN (__preinit_array_start = .);
         KEEP (*(.preinit_array))
         PROVIDE_HIDDEN (__preinit_array_end = .);
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .init_array :
     {
         PROVIDE_HIDDEN (__init_array_start = .);
+        /*
         KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
         KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
+        */
+        KEEP(*(.init_array*));
         PROVIDE_HIDDEN (__init_array_end = .);
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .fini_array :
     {
         PROVIDE_HIDDEN (__fini_array_start = .);
+        /*
         KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
         KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
+        */
+        KEEP(*(.fini_array*));
         PROVIDE_HIDDEN (__fini_array_end = .);
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .ctors :
     {
+        /* gcc uses crtbegin.o to find the start of
+          the constructors, so we make sure it is
+          first.  Because this is a wildcard, it
+          doesn't matter if the user does not
+          actually link against crtbegin.o; the
+          linker won't look for a file to match a
+          wildcard.  The wildcard also means that it
+          doesn't matter which directory crtbegin.o
+          is in.  */
         KEEP (*crtbegin.o(.ctors))
         KEEP (*crtbegin?.o(.ctors))
+        /* We don't want to include the .ctor section from
+          the crtend.o file until after the sorted ctors.
+          The .ctor section from the crtend file contains the
+          end of ctors marker and it must be last */
         KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o ) .ctors))
         KEEP (*(SORT(.ctors.*)))
         KEEP (*(.ctors))
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
 
     .dtors :
     {
@@ -80,12 +99,23 @@ SECTIONS
         KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o ) .dtors))
         KEEP (*(SORT(.dtors.*)))
         KEEP (*(.dtors))
-    } > MEMORY_ALL
+    } >FLASH AT>FLASH
+
+    .dalign :
+    {
+        . = ALIGN(4);
+        PROVIDE(_data_vma = .);
+    } >RAM AT>FLASH
+
+    .dlalign :
+    {
+        . = ALIGN(4);
+        PROVIDE(_data_lma = .);
+    } >FLASH AT>FLASH
 
     .data :
     {
         . = ALIGN(4);
-        PROVIDE( _sdata = .);
         *(.gnu.linkonce.r.*)
         *(.data .data.*)
         *(.gnu.linkonce.d.*)
@@ -102,7 +132,7 @@ SECTIONS
         *(.srodata .srodata.*)
         . = ALIGN(4);
         PROVIDE( _edata = .);
-    } > MEMORY_ALL
+    } >RAM AT>FLASH
 
     .bss :
     {
@@ -115,17 +145,25 @@ SECTIONS
         *(COMMON*)
         . = ALIGN(4);
         PROVIDE( _ebss = .);
-    } > MEMORY_ALL
+    } >RAM AT>FLASH
 
-    PROVIDE( _end = _ebss);
-    PROVIDE( end = . );
+    PROVIDE(end = .);
+    PROVIDE(_end = .);
+    PROVIDE(__end = .);
 
-    .stack ORIGIN(MEMORY_ALL) + LENGTH(MEMORY_ALL) - __stack_size :
+    .heap :
     {
-        PROVIDE( _heap_end = . );
         . = ALIGN(4);
-        PROVIDE(_susrstack = . );
+        __heap_start = .;
+        . = ORIGIN(RAM) + LENGTH(RAM) - __stack_size;
+        __heap_end = .;
+    } >RAM
+
+    .stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
+    {
+        . = ALIGN(4);
+        PROVIDE(_sstack = .);
         . = . + __stack_size;
-        PROVIDE( _eusrstack = .);
-    } > MEMORY_ALL
+        PROVIDE(_estack = .);
+    } > RAM
 }

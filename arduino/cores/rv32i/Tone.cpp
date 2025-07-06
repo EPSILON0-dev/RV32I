@@ -32,6 +32,8 @@ Version Modified By Date     Comments
 0008    S Kanemoto  12/06/22 Fixed for Leonardo by @maris_HY
 0009    J Reucker   15/04/10 Issue #292 Fixed problems with ATmega8 (thanks to Pete62)
 0010    jipp        15/04/13 added additional define check #2923
+
+  Modified by EPSILON0-dev on 04.07.2025
 *************************************************/
 
 #include <stdint.h>

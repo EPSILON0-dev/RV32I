@@ -26,6 +26,8 @@
 #include <math.h>
 
 #include "Print.h"
+#include "Arduino.h"
+#include "pins_rv32i.h"
 
 // Public Methods //////////////////////////////////////////////////////////////
 
@@ -201,7 +203,7 @@ size_t Print::println(const Printable& x)
 
 size_t Print::printNumber(unsigned long n, uint8_t base)
 {
-  char buf[8 * sizeof(long) + 1]; // Assumes 8-bit chars plus zero byte.
+  char buf[8 * sizeof(char) + 1]; // Assumes 8-bit chars plus zero byte.
   char *str = &buf[sizeof(buf) - 1];
 
   *str = '\0';

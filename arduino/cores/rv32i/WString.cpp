@@ -17,11 +17,82 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Modified by EPSILON0-dev on 04.07.2025
 */
 
 #include "WString.h"
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
+
+// This function was written by AI
+static char* dtostrf(double val, signed char width, unsigned char prec, char* s) 
+{
+    char temp_buffer[64];
+    char* s_ptr = s;
+    int integer_part;
+    double fractional_part;
+    int i;
+    int sign = 0;
+
+    // Handle negative sign
+    if (val < 0) 
+	{
+        sign = 1;
+        val = -val;
+        *s_ptr++ = '-';
+    }
+
+    // Extract integer part
+    integer_part = (int)floor(val);
+
+    // Convert integer part to string using my_itoa
+    itoa(integer_part, temp_buffer, 10);
+    strcpy(s_ptr, temp_buffer);
+    s_ptr += strlen(temp_buffer);
+
+    // Handle fractional part if precision is greater than 0
+    if (prec > 0) {
+        *s_ptr++ = '.';
+        fractional_part = val - floor(val);
+
+        // Scale the fractional part by 10^prec, then round to nearest integer
+        // This effectively moves the desired fractional digits to the integer part
+        long long scaled_fraction = (long long)round(fractional_part * pow(10, prec));
+
+        // Convert the scaled fractional part to string
+        // Pad with leading zeros if necessary
+        char fractional_str[20]; // Sufficient for up to 18-19 digits
+        itoa((int)scaled_fraction, fractional_str, 10); // Use itoa for scaled integer
+
+        // Calculate actual length of scaled_fraction_str
+        int actual_frac_len = strlen(fractional_str);
+
+        // If the scaled_fraction resulted in fewer digits than 'prec',
+        // it means there were leading zeros in the fractional part.
+        // We need to add those back.
+        for (i = 0; i < prec - actual_frac_len; i++) {
+            *s_ptr++ = '0';
+        }
+        strcpy(s_ptr, fractional_str);
+        s_ptr += actual_frac_len;
+    }
+
+    // Apply width padding (simplified, assumes right-justification for positive width)
+    // In a full dtostrf, this is more complex with left/right justification.
+    int current_len = strlen(s);
+    if (width > 0 && current_len < width) {
+        int padding_needed = width - current_len;
+        // Shift existing string to the right to make space for padding
+        memmove(s + padding_needed, s, current_len + 1); // +1 for null terminator
+        for (i = 0; i < padding_needed; i++) {
+            s[i] = ' '; // Pad with spaces
+        }
+    }
+
+    return s;
+}
 
 /*********************************************/
 /*  Constructors                             */
@@ -111,16 +182,14 @@ String::String(float value, unsigned char decimalPlaces)
 {
 	init();
 	char buf[33];
-	// TODO
-	*this = (const char*)malloc(sizeof(String)); // dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
+	*this = dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
 }
 
 String::String(double value, unsigned char decimalPlaces)
 {
 	init();
 	char buf[33];
-	// TODO
-	*this = (const char*)malloc(sizeof(String)); // dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
+	*this = dtostrf(value, (decimalPlaces + 2), decimalPlaces, buf);
 }
 
 String::~String()
@@ -327,16 +396,14 @@ unsigned char String::concat(unsigned long num)
 unsigned char String::concat(float num)
 {
 	char buf[20];
-	// TODO
-	char* string = 0; // dtostrf(num, 4, 2, buf);
+	char *string = dtostrf(num, 4, 2, buf);
 	return concat(string, strlen(string));
 }
 
 unsigned char String::concat(double num)
 {
 	char buf[20];
-	// TODO
-	char* string = 0; // dtostrf(num, 4, 2, buf);
+	char *string = dtostrf(num, 4, 2, buf);
 	return concat(string, strlen(string));
 }
 

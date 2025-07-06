@@ -24,6 +24,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include <math.h>
 
@@ -134,6 +135,8 @@ void loop(void);
 #include "WCharacter.h"
 #include "WString.h"
 #include "HardwareSerial.h"
+
+extern HardwareSerial Serial;
 
 uint16_t makeWord(uint16_t w);
 uint16_t makeWord(byte h, byte l);

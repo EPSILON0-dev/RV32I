@@ -1,4 +1,3 @@
-/* This file was "borrowed" from the CH32V003 SDK */
 OUTPUT_ARCH("riscv")
 ENTRY(_start)
 

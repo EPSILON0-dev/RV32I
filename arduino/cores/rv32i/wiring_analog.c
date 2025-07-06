@@ -23,6 +23,7 @@
 
   Modified by EPSILON0-dev on 04.07.2025
 */
+#include "stdint.h"
 
 #if __ANALOG_DEFINE == 1
 void analogReference(uint8_t mode)

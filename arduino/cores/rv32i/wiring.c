@@ -24,14 +24,16 @@
 
 #include "defs_rv32i.h"
 
+static uint32_t millis_zero = 0;
+
 unsigned long millis()
 {
-	return TIMER_DAT / (F_CPU / 1000);
+	return (TIMER_DAT - millis_zero) / (F_CPU / 1000);
 }
 
 unsigned long micros() 
 {
-	return TIMER_DAT / (F_CPU / 1000000);
+	return (TIMER_DAT - millis_zero) / (F_CPU / 1000000);
 }
 
 void delay(unsigned long ms)
@@ -51,5 +53,5 @@ void delayMicroseconds(unsigned int us)
 
 void init()
 {
-	;; // Not much to do around here, is there?
+  millis_zero = TIMER_DAT;
 }

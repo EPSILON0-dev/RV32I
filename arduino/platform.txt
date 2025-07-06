@@ -14,22 +14,24 @@ compiler.objdump.cmd={compiler.path}{compiler.prefix}objdump
 compiler.size.cmd={compiler.path}{compiler.prefix}size
 
 # Compiler flags
-compiler.c.flags=-c -g -Os -march=rv32i_zicsr -mabi=ilp32 --std=c99 -ffunction-sections -fdata-sections -DF_CPU=12000000
-compiler.cpp.flags=-c -g -Os -march=rv32i_zicsr -mabi=ilp32 --std=gnu++17 -ffunction-sections -fdata-sections -DF_CPU=12000000
+compiler.defines=-DF_CPU={build.f_cpu} -DARDUINO=180 -D__TONE_DEFINE={build.tone_define} -D__PWM_DEFINE={build.pwm_define} -D__ANALOG_DEFINE={build.analog_define} -D__SERIAL_FORCE_9600={build.force_baud_rate}
+compiler.common.flags=-c -g -Os -march=rv32i_zicsr -mabi=ilp32 -ffunction-sections -fdata-sections
+compiler.c.flags=--std=c99
+compiler.cpp.flags=--std=gnu++17
 compiler.ar.flags=rcs
 
 # Linker flags
-compiler.ldflags=-march=rv32i_zicsr -mabi=ilp32 -nostartfiles -T{runtime.platform.path}/link.ld -Wl,--gc-sections -Wl,--print-memory-usage
+compiler.ldflags=-march=rv32i_zicsr -mabi=ilp32 -nostartfiles -T{runtime.platform.path}/link.ld -Wl,--gc-sections -Wl,--print-memory-usage -Wl,-Map={build.path}/{build.project_name}.map
 
 # Recipe patterns
-recipe.c.o.pattern="{compiler.c.cmd}" {compiler.c.flags} {compiler.extra_flags} -I../hal {includes} "{source_file}" -o "{object_file}"
-recipe.cpp.o.pattern="{compiler.cpp.cmd}" {compiler.cpp.flags} {compiler.extra_flags} -I../hal {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.c.cmd}" {compiler.defines} {compiler.common.flags} {compiler.c.flags} {compiler.extra_flags} -I../hal {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.cpp.cmd}" {compiler.defines} {compiler.common.flags} {compiler.cpp.flags} {compiler.extra_flags} -I../hal {includes} "{source_file}" -o "{object_file}"
 recipe.S.o.pattern="{compiler.c.cmd}" -c -g -march=rv32i_zicsr -mabi=ilp32 -x assembler-with-cpp {includes} "{source_file}" -o "{object_file}"
 
 archive_file_path={build.path}/{archive_file}
 recipe.ar.pattern="{compiler.ar.cmd}" {compiler.ar.flags} "{archive_file_path}" "{object_file}"
 
-recipe.c.combine.pattern="{compiler.c.cmd}" {compiler.ldflags} {compiler.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm
+recipe.c.combine.pattern="{compiler.cpp.cmd}" {compiler.ldflags} {compiler.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm
 
 recipe.objcopy.hex.pattern="{compiler.objcopy.cmd}" -O binary "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
 
@@ -37,3 +39,11 @@ recipe.size.pattern="{compiler.size.cmd}" -A "{build.path}/{build.project_name}.
 
 # Extra flags placeholders
 compiler.extra_flags=
+
+# Upload
+tools.python_loader.path={runtime.platform.path}
+tools.python_loader.cmd=python
+tools.python_loader.cmd.windows=python.exe
+tools.python_loader.upload.params.verbose=
+tools.python_loader.upload.params.quiet=
+tools.python_loader.upload.pattern="{cmd}" "{path}/loader.py" {upload.verbose}  {build.path}/{build.project_name}.hex {serial.port} --no-verify
